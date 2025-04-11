@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Менің веб-сайтым</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Poppins', sans-serif;
@@ -20,6 +16,7 @@
       animation: gradient 15s ease infinite;
       cursor: none;
       color: #fff;
+      position: relative;
     }
 
     @keyframes gradient {
@@ -39,7 +36,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 2s linear infinite;
-      text-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff, 0 0 50px #ff00ff, 0 0 100px #ff00ff;
+      text-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff;
     }
 
     @keyframes shine {
@@ -51,14 +48,14 @@
       font-size: 28px;
       margin-top: 20px;
       color: #fceaff;
-      text-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff, 0 0 50px #ff00ff;
+      text-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff;
     }
 
     p.subtitle {
       font-size: 20px;
       color: #ccccff;
       margin-top: 10px;
-      text-shadow: 0 0 5px #00ffe0, 0 0 10px #ff00ff, 0 0 15px #9b00ff;
+      text-shadow: 0 0 5px #00ffe0, 0 0 10px #ff00ff;
     }
 
     nav ul {
@@ -78,6 +75,7 @@
       font-size: 18px;
       transition: 0.3s;
       box-shadow: 0 5px 15px rgba(138, 43, 226, 0.5);
+      cursor: none;
     }
 
     nav ul li a:hover {
@@ -99,7 +97,7 @@
       background: linear-gradient(to right, #00ffe0, #ff8a00);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 5px #ff00ff, 0 0 20px #ff00ff, 0 0 50px #00ffe0;
+      text-shadow: 0 0 5px #ff00ff, 0 0 20px #ff00ff;
     }
 
     button {
@@ -161,11 +159,22 @@
       transition: transform 0.1s linear;
     }
 
-    /* 去掉手指图标 */
-    nav ul li a {
-      cursor: none;
+    .cat-img {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.4);
+      box-shadow: 0 0 20px #ff00ff;
+      animation: fadeOut 5s ease forwards;
     }
 
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.2); }
+    }
   </style>
 </head>
 <body>
@@ -185,7 +194,7 @@
   </nav>
 
   <section>
-    <h2> Бетке көшу</h2>
+    <h2>Бетке көшу</h2>
     <button onclick="window.location.href='about.html'">Мен туралы бетке өту</button>
   </section>
 
@@ -194,24 +203,43 @@
   </footer>
 
   <script>
-    const starCount = 150;
-    for (let i = 0; i < starCount; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.style.left = Math.random() * 100 + 'vw';
-      star.style.animationDuration = (3 + Math.random() * 4) + 's';
-      star.style.animationDelay = Math.random() * 5 + 's';
-      document.body.appendChild(star);
-    }
+  const starCount = 150;
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + 'vw';
+    star.style.animationDuration = (3 + Math.random() * 4) + 's';
+    star.style.animationDelay = Math.random() * 5 + 's';
+    document.body.appendChild(star);
+  }
 
-    const cursor = document.createElement('div');
-    cursor.classList.add('cursor');
-    document.body.appendChild(cursor);
-    document.addEventListener('mousemove', e => {
-      cursor.style.top = e.clientY + 'px';
-      cursor.style.left = e.clientX + 'px';
-    });
-  </script>
+  const cursor = document.createElement('div');
+  cursor.classList.add('cursor');
+  document.body.appendChild(cursor);
+  document.addEventListener('mousemove', e => {
+    cursor.style.top = e.clientY + 'px';
+    cursor.style.left = e.clientX + 'px';
+  });
+
+  async function showCat() {
+    try {
+      const res = await fetch('https://api.thecatapi.com/v1/images/search');
+      const data = await res.json();
+      const img = document.createElement('img');
+      img.src = data[0].url;
+      img.className = 'cat-img';
+      img.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+      img.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+      document.body.appendChild(img);
+      setTimeout(() => img.remove(), 5000);
+    } catch (err) {
+      console.error('Error fetching cat image:', err);
+    }
+  }
+
+  // 每隔2秒自动生成一只猫
+  setInterval(showCat, 2000);
+</script>
 
 </body>
 </html>
